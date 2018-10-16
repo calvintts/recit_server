@@ -82,7 +82,6 @@ router.post('/login',bruteforce.prevent,function(req,res,next)
                 "data": {
                     "firstname": user['firstname'],
                     "lastname": user['lastname'],
-                    "cell": user['cell']
                 }
           });
         }
