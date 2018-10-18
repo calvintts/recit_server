@@ -3,6 +3,7 @@ var router = express.Router();
 var User = require('../model/user');
 var md5 = require('md5');
 var ExpressBrute = require ('express-brute');
+var send_mail = require('../lib/send_mail');
 
 var store = new ExpressBrute.MemoryStore();
 var bruteforce = new ExpressBrute(store,{
@@ -42,7 +43,7 @@ router.post('/register',function(req,res)
                         console.log(err);
                         return res.status(400).json({"result":false, "message":"Failed creating an account"});
                     }
-										send_mail(newUser.firstname,newUser.email)
+										send_mail(newUser.firstname,newUser.email);
                     return res.status(200).json({"result":true, "message":"Account Registered!"});
                 });
             }else{
