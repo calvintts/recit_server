@@ -1,14 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../model/user');
-var db_connect = require('../lib/db_connect');
 var md5 = require('md5');
 var ExpressBrute = require ('express-brute');
 
-// db_connect();
 var store = new ExpressBrute.MemoryStore();
 var bruteforce = new ExpressBrute(store,{
-	freeRetries: 2,
+	freeRetries: 5,
 	minWait: 1000 * 60, //1 minute
 	maxWait: 10*60*1000, //10 minutes
 	failCallback: ExpressBrute.FailTooManyRequests
@@ -33,7 +31,6 @@ router.post('/register',function(req,res)
     newUser.firstname = firstname;
     newUser.lastname = lastname;
     newUser.validated = false;
-
     User.findOne({email:email},function(err,user){
         if(err) {
             console.log(err);
@@ -45,6 +42,7 @@ router.post('/register',function(req,res)
                         console.log(err);
                         return res.status(400).json({"result":false, "message":"Failed creating an account"});
                     }
+										send_mail(newUser.firstname,newUser.email)
                     return res.status(200).json({"result":true, "message":"Account Registered!"});
                 });
             }else{
@@ -53,11 +51,23 @@ router.post('/register',function(req,res)
             }
         }
     });
-    // res.json({"res":"sohai"})
 });
 
-router.get('/laji',(req,res,next) => {
-  res.json({"result":"laji"});
+
+
+router.get('/validate/:email',(req,res,next) => {
+	let email = req.params.email
+	User.findOneAndUpdate({email:email},{$set:{validated:true}},{new:true},(err,result) => {
+		if(err)
+		{
+			console.log(err);
+			res.status(500).json(err);
+		}
+		else{
+			result == null ? res.status(404).json({"message": "email not found"}) : res.status(200).json({'message':'validation completed'})
+			console.log(result)
+		}
+	});
 })
 
 router.post('/login',bruteforce.prevent,function(req,res,next)
