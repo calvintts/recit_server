@@ -1,11 +1,12 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var db_connect = require('./lib/db_connect')
+var recipeRouter = require('./routes/recipe')
+
 var app = express();
 db_connect();
 
@@ -16,6 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/recipe', recipeRouter);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
