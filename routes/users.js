@@ -80,19 +80,19 @@ router.post('/login',bruteforce.prevent,function(req,res,next)
 
   User.findOne({email: email, password: password},function(err,user){
     if(err) {
-        next(err);
-      //return res.json({"result":false, "message":"Login Failed"});
+        // next(err);
+      return res.json({"result":false, "message":"Login Failed"});
     } else {
         //if user exists
         console.log(user);
         if(user) {
-						// req.session.user = user;
             return res.status(200).json({
                 "result": true,
                 "message": "Login success",
                 "data": {
                     "firstname": user['firstname'],
                     "lastname": user['lastname'],
+										"id": user['_id'],
                 }
           });
         }

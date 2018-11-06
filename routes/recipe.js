@@ -4,7 +4,7 @@ var Recipe = require('../model/recipe');
 
 router.post('/add',(req,res)=>
 {
-  if(!req.body.name) return res.status(422).json({"result":false, "message":"Please specify a recipe name"});
+  //if(!req.body.name) return res.status(422).json({"result":false, "message":"Please specify a recipe name"});
   if(!req.body.instructions) return res.status(422).json({"result":false, "message":"Instructions missing"});
   if(!req.body.ingredients) return res.status(422).json({"result":false, "message":"Ingredients empty"});
   // res.status(200).json({"result":true, "message":"Hello welcome to adding recipe"});
