@@ -136,9 +136,25 @@ router.put('/updateliao',(req,res)=>{
 				})
 			}else{
 					let iid = returnedUser.ingredients
-					Ingredients.findByIdAndUpdate(iid,{ $set: {liao:ingredients,updated:moment()}},updated=>{
-						console.log(updated)
-						res.status(200).json({"result":true,"message":updated})
+					Ingredients.findById(iid,(err,returnObj)=>{
+						if(err)
+						{
+							console.log(err)
+							res.status(500).json({"result":false,"message":err})
+						}else{
+							returnObj.liao=ingredients
+							returnObj.updated=moment()
+							returnObj.save((err,updated)=>{
+								if(err)
+								{
+									console.log(err)
+									res.status(500).json({"result":false,"message":err})
+								}
+								else{
+									res.status(200).json({"result":true,"message":updated})
+								}
+							})
+						}
 					})
 			}
 		}
