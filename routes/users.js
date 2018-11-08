@@ -1,9 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../model/user');
+var Ingredients = require('../model/ingredients')
 var md5 = require('md5');
 var ExpressBrute = require ('express-brute');
 var send_mail = require('../lib/send_mail');
+var moment = require('moment');
 
 var store = new ExpressBrute.MemoryStore();
 var bruteforce = new ExpressBrute(store,{
@@ -104,6 +106,64 @@ router.post('/login',bruteforce.prevent,function(req,res,next)
     }
   })
 });
+
+router.put('/updateliao',(req,res)=>{
+	if(!req.body.id) return res.status(400).json({"result":false, "message":"user id required"});
+	if(!req.body.ingredients) return res.status(400).json({"result":false, "message":"ingredients required"});
+	let id = req.body.id
+	let ingredients = req.body.ingredients
+	let updateIngredients = new Ingredients()
+	updateIngredients.liao = ingredients
+	updateIngredients.updated = moment()
+	User.findById(id,(err,returnedUser)=>{
+		if(err){
+			console.log(err)
+			res.status(500).json({"result": false, "message": err})
+		}else{
+			if(returnedUser.ingredients==null)
+			{
+				updateIngredients.save((err,savedIngredients)=>{
+					if(err)
+					{
+						console.log(err)
+						res.status(500).json({"result": false, "message": err})
+					}else{
+						returnedUser.update({ingredients:savedIngredients},updated=>{
+							console.log(updated)
+							res.status(200).json({"result":true,"message":savedIngredients})
+						})
+					}
+				})
+			}else{
+					let iid = returnedUser.ingredients
+					Ingredients.findByIdAndUpdate(iid,updateIngredients,updated=>{
+						console.log(updated)
+						res.status(200).json({"result":true,"message":updated})
+					})
+			}
+		}
+	})
+})
+
+router.get('/ingredients/:id',(req,res)=>{
+	let id = req.params.id
+	User.findById(id,(err,returnedUser)=>{
+		if(err){
+			console.log(err)
+			res.status(500).json({"result": false, "message": err})
+		}else{
+			Ingredients.find(returnedUser.ingredients,(err,returnedIngredients)=>{
+				if(err)
+				{
+					res.status(500).json({"result":false,"message":err})
+				}else{
+					res.status(200).json({"result":true,"message":returnedIngredients})
+				}
+			})
+		}
+	})
+})
+
 
 
 module.exports = router;

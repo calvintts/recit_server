@@ -15,13 +15,13 @@ router.post('/add',(req,res)=>
   newRecipe.name = name
   newRecipe.instructions = instructions
   newRecipe.ingredients = ingredients
-  newRecipe.save((err,savedUser)=>
+  newRecipe.save((err,savedRecipe)=>
   {
     if(err){
         console.log(err);
         return res.status(400).json({"result":false, "message":"Error Saving Recipe"});
     }else{
-      return res.status(200).json({"result":true, "message":"Recipe Saved"});
+      return res.status(200).json({"result":true, "message":savedRecipe});
     }
   })
 })
