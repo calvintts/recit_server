@@ -112,9 +112,6 @@ router.put('/updateliao',(req,res)=>{
 	if(!req.body.ingredients) return res.status(400).json({"result":false, "message":"ingredients required"});
 	let id = req.body.id
 	let ingredients = req.body.ingredients
-	let updateIngredients = new Ingredients()
-	updateIngredients.liao = ingredients
-	updateIngredients.updated = moment()
 	User.findById(id,(err,returnedUser)=>{
 		if(err){
 			console.log(err)
@@ -122,6 +119,9 @@ router.put('/updateliao',(req,res)=>{
 		}else{
 			if(returnedUser.ingredients==null)
 			{
+				let updateIngredients = new Ingredients()
+				updateIngredients.liao = ingredients
+				updateIngredients.updated = moment()
 				updateIngredients.save((err,savedIngredients)=>{
 					if(err)
 					{
@@ -136,7 +136,7 @@ router.put('/updateliao',(req,res)=>{
 				})
 			}else{
 					let iid = returnedUser.ingredients
-					Ingredients.findByIdAndUpdate(iid,updateIngredients,updated=>{
+					Ingredients.findByIdAndUpdate(iid,{ $set: {liao:ingredients,updated:moment()}},updated=>{
 						console.log(updated)
 						res.status(200).json({"result":true,"message":updated})
 					})
