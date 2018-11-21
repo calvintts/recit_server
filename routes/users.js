@@ -6,6 +6,8 @@ var md5 = require('md5');
 var ExpressBrute = require ('express-brute');
 var send_mail = require('../lib/send_mail');
 var moment = require('moment');
+var findliaopu = require('../lib/updateliaopu')
+
 
 var store = new ExpressBrute.MemoryStore();
 var bruteforce = new ExpressBrute(store,{
@@ -144,6 +146,7 @@ router.put('/updateliao',(req,res)=>{
 						}else{
 							returnObj.liao=ingredients
 							returnObj.updated=moment()
+							returnObj.liaopu=findliaopu(ingredients)
 							returnObj.save((err,updated)=>{
 								if(err)
 								{
@@ -151,6 +154,7 @@ router.put('/updateliao',(req,res)=>{
 									res.status(500).json({"result":false,"message":err})
 								}
 								else{
+									console.log(updated)
 									res.status(200).json({"result":true,"message":updated})
 								}
 							})
