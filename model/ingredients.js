@@ -3,7 +3,7 @@ var liaopu = require('./recipe');
 
 var ingredientsSchema = new mongoose.Schema({
   liao: [String],
-  liaopu: [liaopu],
+  liaopu: [String],
   updated: { type: Date, default: Date.now },
 });
 
