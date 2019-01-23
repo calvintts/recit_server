@@ -15,6 +15,7 @@ router.post('/add',(req,res)=>
   newRecipe.name = name
   newRecipe.instructions = instructions
   newRecipe.ingredients = ingredients
+  newRecipe.image = image;
   newRecipe.save((err,savedRecipe)=>
   {
     if(err){
